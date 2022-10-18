@@ -5,27 +5,26 @@ import { useIsFetching } from 'react-query';
 
 export function Loading(): ReactElement {
 
-
   //useIsfetching를 활용한 로딩중앙집중화
   const isFetching = useIsFetching(); 
 
   const display = isFetching ? 'inherit' : 'none';
 
   return (
-    <Spinner
-      thickness="4px"
-      speed="0.65s"
-      emptyColor="olive.200"
-      color="olive.800"
-      role="status"
-      position="fixed"
-      zIndex="9999"
-      top="50%"
-      left="50%"
-      transform="translate(-50%, -50%)"
-      display={display}
-    >
-      <Text display="none">Loading...</Text>
-    </Spinner>
+      <Spinner
+        thickness="4px"
+        speed="0.65s"
+        emptyColor="olive.200"
+        color="olive.800"
+        role="status"
+        position="fixed"
+        zIndex="9999"
+        top="50%"
+        left="50%"
+        transform="translate(-50%, -50%)"
+        display={display}
+      >
+        <Text display="none">Loading...</Text>
+      </Spinner>
   );
 }

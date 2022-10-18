@@ -1,6 +1,5 @@
 import { Box, Heading, HStack, Radio, RadioGroup } from '@chakra-ui/react';
 import { ReactElement } from 'react';
-
 import { useTreatments } from '../treatments/hooks/useTreatments';
 import { useStaff } from './hooks/useStaff';
 import { Staff } from './Staff';
