@@ -20,9 +20,9 @@ export function useTreatments(): Treatment[] {
   return data;
 }
 
-//dont use in useEffect
+//!dont use in useEffect
 export function usePrefetchTreatments(): void {
-  //set prefetch key
+  //!set prefetch key
   const queryClient = useQueryClient();
   queryClient.prefetchQuery(queryKeys.treatments, getTreatments);
 }
