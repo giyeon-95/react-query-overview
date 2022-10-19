@@ -25,6 +25,7 @@ interface UseAppointments {
   monthYear: MonthYear;
   updateMonthYear: (monthIncrement: number) => void;
   showAll: boolean;
+  //! setState type
   setShowAll: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -64,7 +65,7 @@ export function useAppointments(): UseAppointments {
   /** ****************** START 3: useQuery  ***************************** */
   // useQuery call for appointments for the current monthYear
 
-  //다음 달 프리페칭 (monthYear 변경시)
+  //! 다음 달 프리페칭 (monthYear 변경시)
   const queryClient = useQueryClient();
   useEffect(() => {
     // increment of one month
@@ -75,9 +76,10 @@ export function useAppointments(): UseAppointments {
     );
   }, [queryClient, monthYear]);
 
+  //!fallback 설정 (initData)
   const fallback = {};
 
-  //달력 배치가 변경되기 때문에 keepPreviousData는 어울리지 않는다. (fetch하는 동안 이전 달 데이터가 유지되어 이상하게 보일 수 있기 때문)
+  //! 달력 배치가 변경되기 때문에 keepPreviousData는 어울리지 않는다. (fetch하는 동안 이전 달 데이터가 유지되어 이상하게 보일 수 있기 때문)
   const { data: appointments = fallback } = useQuery(
     [queryKeys.appointments, monthYear.year, monthYear.month],
     () => getAppointments(monthYear.year, monthYear.month)
