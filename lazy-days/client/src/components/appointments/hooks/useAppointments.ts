@@ -1,6 +1,6 @@
 // @ts-nocheck
 import dayjs from "dayjs";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
 
 import { axiosInstance } from "../../../axiosInstance";
@@ -9,6 +9,13 @@ import { useUser } from "../../user/hooks/useUser";
 import { AppointmentDateMap } from "../types";
 import { getAvailableAppointments } from "../utils";
 import { getMonthYearDetails, getNewMonthYear, MonthYear } from "./monthYear";
+
+  //! refetchOn ~ 옵션들은 prefetch에 적용되지 않지만 staleTime , cacheTime은 같은 키에 동시적용된다.
+  const commonOptions = {
+    staleTime: 0, 
+    cacheTime: 30000, //5 m
+  }
+
 
 // for useQuery call
 async function getAppointments(
@@ -61,9 +68,14 @@ export function useAppointments(): UseAppointments {
   //   appointments that the logged-in user has reserved (in white)
   const { user } = useUser();
 
-  /** ****************** END 2: filter appointments  ******************** */
-  /** ****************** START 3: useQuery  ***************************** */
-  // useQuery call for appointments for the current monthYear
+  //! shoAll 조건에 따라 data를 받은 후, 가공
+  //! 종속성을 user로 설정 : 로그인하는 유저에따라서, 로그인상태에따라서 함수 변경
+  
+  const selectFn = useCallback((data : any)=> {
+    return getAvailableAppointments(data, user);
+  }, [user]);
+
+
 
   //! 다음 달 프리페칭 (monthYear 변경시)
   const queryClient = useQueryClient();
@@ -72,20 +84,26 @@ export function useAppointments(): UseAppointments {
     const nextMonthYear = getNewMonthYear(monthYear, 1);
     queryClient.prefetchQuery(
       [queryKeys.appointments, nextMonthYear.year, nextMonthYear.month],
-      () => getAppointments(nextMonthYear.year, nextMonthYear.month)
+      () => getAppointments(nextMonthYear.year, nextMonthYear.month), 
+      commonOptions
     );
   }, [queryClient, monthYear]);
 
   //!fallback 설정 (initData)
   const fallback = {};
 
-  //! 달력 배치가 변경되기 때문에 keepPreviousData는 어울리지 않는다. (fetch하는 동안 이전 달 데이터가 유지되어 이상하게 보일 수 있기 때문)
+  //! 달력 배치가 변경되기 때문에 keepPreviousData속성은 어울리지 않는다. (fetch하는 동안 이전 달 데이터가 유지되어 이상하게 보일 수 있기 때문)
+  //! select -> showAll 상태에 따라서 데이터 가공 여부결정
   const { data: appointments = fallback } = useQuery(
     [queryKeys.appointments, monthYear.year, monthYear.month],
-    () => getAppointments(monthYear.year, monthYear.month)
+    () => getAppointments(monthYear.year, monthYear.month), {
+      select : showAll ? undefined : selectFn,
+      ...commonOptions,
+      refetchOnMount : true , 
+      refetchOnReconnect : true ,
+      refetchOnWindowFocus : true ,
+    }
   );
-
-  /** ****************** END 3: useQuery  ******************************* */
 
   return { appointments, monthYear, updateMonthYear, showAll, setShowAll };
 }

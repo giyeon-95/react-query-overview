@@ -15,10 +15,8 @@ export function useTreatments(): Treatment[] {
 
   const { data = fallback } = useQuery(queryKeys.treatments, getTreatments);
 
-  console.log(1, data);
-
   return data;
-}
+} 
 
 //!dont use in useEffect
 export function usePrefetchTreatments(): void {

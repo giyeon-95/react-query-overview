@@ -52,5 +52,6 @@ export function getAvailableAppointments(
     );
   });
 
+  // 예약 가능한 날짜만 보여주기
   return filteredAppointments;
 }

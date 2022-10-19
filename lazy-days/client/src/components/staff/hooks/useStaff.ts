@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useQuery } from 'react-query';
 import { Dispatch, SetStateAction, useState } from 'react';
 
@@ -20,10 +21,13 @@ interface UseStaff {
 export function useStaff(): UseStaff {
   
   const [filter, setFilter] = useState('all'); // for filtering staff by treatment
+  
+  const selectFn = useCallback((unfilteredStaff)=> filterByTreatment(unfilteredStaff, filter),[filter]) ;
 
   const fallback= []; 
-
-  const {data : staff = fallback } = useQuery(queryKeys.staff, () =>getStaff());
+  const {data : staff = fallback } = useQuery(queryKeys.staff, () =>getStaff(), {
+    select : filter !=='all' ?  selectFn  :undefined
+  });
 
   return { staff, filter, setFilter };
 }
