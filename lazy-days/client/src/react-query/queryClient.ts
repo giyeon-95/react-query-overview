@@ -4,7 +4,7 @@ import { theme } from "../theme";
 
 const toast = createStandaloneToast({ theme });
 
-//쿼리 에러 통합 관리
+//!쿼리,뮤테이트 에러 통합 관리
 function queryErrorHandler(error: unknown): void {
   // error is type unknown because in js, anything can be an error (e.g. throw(5))
   const title =
@@ -23,6 +23,9 @@ export const queryClient = new QueryClient({
             refetchOnMount : false, 
             refetchOnReconnect : false,
             refetchOnWindowFocus : false,
+        },
+        mutations: {
+          onError : queryErrorHandler
         }
     }
 });

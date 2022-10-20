@@ -50,10 +50,11 @@ export function useUser(): UseUser {
    
    그런데 캐시값으로 저장한걸 쓰면 새로고침 시 캐시가 날아가버려서 로그아웃됨.
    그래서 로컬스토리지로 저장.
+   
+   이 코드는 새로고침하면 풀림 ->  const {data :user} = useQuery(queryKeys.user, ()=> getUser(user))
   */
-  // const {data :user} = useQuery(queryKeys.user, ()=> getUser(user))
   
-  /*
+  /*!
     onSuccess는 실행시킨 useQuery나, setQueryData에서 데이터를 가져오는 함수.(둘 다에서 실행)
     다시말해서 useQuery로 getUser를 실행시킨 데이터를 받아올 수도 있고, updateUser, clearUser로 user나 null을 받을수도 있음.
 
@@ -92,6 +93,7 @@ export function useUser(): UseUser {
   // 로그아웃시 user queryKey 캐싱 데이터 지우기
   function clearUser() {
     queryClient.setQueryData(queryKeys.user, null);
+    queryClient.removeQueries('user-appointments');
   }
 
   return { user, updateUser, clearUser };
@@ -103,6 +105,7 @@ export function useUser(): UseUser {
 
   updateUser는 사용자 로그인이나 사용자 정보 업데이트를 처리함.
   clearUser는 말그대로 로그아웃을 처리.
+  clearUser는 user 쿼리키를 null  로 설정하는 동시에 user와 관련된 모든 쿼리키들을 지워야함.
 
   useUser의 역할은 local storage와 query cache에서 사용자 상태를 유지시키는 것임.
 
