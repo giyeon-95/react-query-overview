@@ -1,5 +1,5 @@
 import { Appointment } from './../../../../../shared/types';
-import { UseMutateFunction, useMutation } from 'react-query';
+import { UseMutateFunction, useMutation, useQueryClient } from 'react-query';
 import { axiosInstance } from '../../../axiosInstance';
 import { queryKeys } from '../../../react-query/constants';
 import { useCustomToast } from '../../app/hooks/useCustomToast';
@@ -28,10 +28,20 @@ async function setAppointmentUser(
 export function useReserveAppointment(): UseMutateFunction<void,unknown,Appointment,unknown> {
   const { user } = useUser();
   const toast = useCustomToast();
-
+  const queryClient = useQueryClient() ;
+ 
   const {mutate} = useMutation((appointment:Appointment)=>setAppointmentUser(
-    appointment, user?.id
-  ));
+    appointment, user?.id 
+  ), {
+    onSuccess:  ()=>{
+      // 뮤테이션 후 쿼리키를 만료시켜 data 리페칭 유도.
+      queryClient.invalidateQueries([queryKeys.appointments]);
+      toast({
+        title : "예약완료",
+        status  :"success",
+      })
+    }
+  });
 
   return mutate;
 }

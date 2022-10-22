@@ -93,7 +93,9 @@ export function useUser(): UseUser {
   // 로그아웃시 user queryKey 캐싱 데이터 지우기
   function clearUser() {
     queryClient.setQueryData(queryKeys.user, null);
-    queryClient.removeQueries('user-appointments');
+    queryClient.removeQueries(
+      [queryKeys.appointments, queryKeys.user]
+    );
   }
 
   return { user, updateUser, clearUser };
