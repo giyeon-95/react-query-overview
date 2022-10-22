@@ -26,6 +26,7 @@ interface AppointmentsTableProps {
 function AppointmentsTable({
   userAppointments,
 }: AppointmentsTableProps): ReactElement {
+  
   const cancelAppointment = useCancelAppointment();
 
   return (

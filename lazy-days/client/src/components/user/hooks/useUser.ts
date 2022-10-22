@@ -83,10 +83,13 @@ export function useUser(): UseUser {
   })
 
   /*
-   updateUser는 useAuth에서 호출되며 로그인 / 회원가입한 User데이터(newUser)를 받아서 
-   setQueryData로 쿼리캐시 업데이트(캐싱).
+   updateUser는 useAuth나 usePatchUser에서 호출되며 로그인 / 회원가입/ 정보를 업데이트한 
+   User데이터(newUser)를 받아서 setQueryData로 쿼리캐시 업데이트(캐싱).
   */
   function updateUser(newUser: User): void {
+    //! localstorage 업데이트
+    setStoredUser(newUser) ;
+    //! 쿼리데이터 업데이트
     queryClient.setQueryData(queryKeys.user, newUser);
   }
 
