@@ -19,7 +19,6 @@ export function InfiniteSpecies() {
     "sw-species", // set query  key
     ({ pageParam = initialUrl }) => {
       console.log("@@", pageParam);
-
       return fetchUrl(pageParam);
     }, //set fetchAPI, init pageParam
     {

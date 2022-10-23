@@ -10,7 +10,7 @@ const Posts = () => {
   const [selectedPost, setSelectedPost] = useState(null);
   const queryClient = useQueryClient();
 
-  //prefetch nextpage
+  //!prefetch nextpage
   useEffect(() => {
     if (currentPage < MAX_POST_PAGE) {
       const nextPage = currentPage + 1;
@@ -25,7 +25,7 @@ const Posts = () => {
     () => fetchPosts(currentPage),
     {
       staleTime: 2000,
-      keepPreviousData: true,
+      keepPreviousData: true, //! 페칭하는 동안 기존데이터유지
     }
   );
 
